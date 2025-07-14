@@ -1,0 +1,56 @@
+
+CREATE TABLE usuarios (
+    idusuario SERIAL PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    correo VARCHAR(100) NOT NULL UNIQUE,
+    clave VARCHAR(40) NOT NULL
+);
+
+CREATE TABLE clientes (
+    idcliente SERIAL PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    dni VARCHAR(8) NOT NULL UNIQUE,
+    correo VARCHAR(100),
+    telefono VARCHAR(9),
+    direccion VARCHAR(150),
+    fecha_registro DATE DEFAULT CURRENT_DATE
+);
+
+CREATE TABLE proyectos (
+    idproyecto SERIAL PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    descripcion VARCHAR(255),
+    fecha_inicio DATE,
+    fecha_fin DATE,
+    estado VARCHAR(50) DEFAULT 'Activo',
+    idcliente INTEGER NOT NULL REFERENCES clientes(idcliente) ON DELETE CASCADE
+);
+
+CREATE TABLE asignacion_proyecto (
+    idasignacion SERIAL PRIMARY KEY,
+    idcliente INTEGER NOT NULL REFERENCES clientes(idcliente) ON DELETE CASCADE,
+    idproyecto INTEGER NOT NULL REFERENCES proyectos(idproyecto) ON DELETE CASCADE,
+    rol_en_proyecto VARCHAR(100),
+    fecha_asignacion DATE DEFAULT CURRENT_DATE
+);
+
+INSERT INTO usuarios (nombre, correo, clave)
+VALUES 
+('Fabian Vilca', 'admin@tecno.com', '1234'),
+('Ana Torres', 'ana@tecno.com', '4321');
+
+INSERT INTO clientes (nombre, dni, correo, telefono, direccion)
+VALUES 
+('Luis Gutierrez', '12345678', 'luis.guti@gmail.com', '987654321', 'Av. Los Incas'),
+('Carla Ramos', '87654321', 'carla.ramos@gmail.com', '912345678', 'Calle Las Flores 120');
+
+INSERT INTO proyectos (nombre, descripcion, fecha_inicio, fecha_fin, estado, idcliente)
+VALUES 
+('Sistema Web de Inventario', 'Desarrollo de sistema para controlar stock', '2025-07-01', '2025-08-15', 'Activo', 1),
+('App de Citas Médicas', 'Aplicación para agendar citas online', '2025-07-10', '2025-09-01', 'Inactivo', 2);
+
+INSERT INTO asignacion_proyecto (idcliente, idproyecto, rol_en_proyecto)
+VALUES 
+(1, 1, 'Jefe de Proyecto'),
+(2, 2, 'Desarrolladora');
+
